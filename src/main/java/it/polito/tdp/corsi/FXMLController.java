@@ -5,8 +5,13 @@
 package it.polito.tdp.corsi;
 
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.corsi.model.Corso;
 import it.polito.tdp.corsi.model.Model;
+import it.polito.tdp.corsi.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -46,22 +51,75 @@ public class FXMLController {
 
     @FXML
     void corsiPerPeriodo(ActionEvent event) {
+    	String input = txtPeriodo.getText();
+    	int inputNum = 0;
+    	try {
+    		inputNum=Integer.parseInt(input);
+    	}catch(NumberFormatException ne) {
+    		txtRisultato.setText("Inserted value is not a number");
+    		return;
+    	}
+    	if (inputNum<1||inputNum>2) {
+    		txtRisultato.setText("Insert 1 or 2");
+    		return;
+    	}
     	
+    	txtRisultato.clear();
+    	List<Corso> corsi= this.model.listCourseByPeriod(Integer.parseInt(txtPeriodo.getText()));
+    	for (Corso c:corsi) {
+    		txtRisultato.appendText(c+"\n");
+    	}
     }
 
     @FXML
     void numeroStudenti(ActionEvent event) {
-    	
+    	String input = txtPeriodo.getText();
+    	int inputNum = 0;
+    	try {
+    		inputNum=Integer.parseInt(input);
+    	}catch(NumberFormatException ne) {
+    		txtRisultato.setText("Inserted value is not a number");
+    		return;
+    	}
+    	if (inputNum<1||inputNum>2) {
+    		txtRisultato.setText("Insert 1 or 2");
+    		return;
+    	}
+    	txtRisultato.clear();
+    	Map<Corso,Integer> corsiIscritti = this.model.CorsiIscritti(inputNum);
+    	for (Corso c: corsiIscritti.keySet()) {
+    		txtRisultato.appendText(""+c+corsiIscritti.get(c)+"\n");
+    	}
     }
 
     @FXML
     void stampaDivisione(ActionEvent event) {
-
+    	String input = txtCorso.getText();
+    	if (input==null) {
+    		txtRisultato.setText("Insert codins");
+    		return;
+    	}
+    	
+    	Map<String,Integer> mappa = this.model.getCDSStudentiPerCorso(input);
+    	txtRisultato.clear();
+    	for (String CDS: mappa.keySet()) {
+    		txtRisultato.appendText(CDS+": "+ mappa.get(CDS)+"\n");
+    	}
+    	
     }
 
     @FXML
     void stampaStudenti(ActionEvent event) {
-
+    	String input = txtCorso.getText();
+    	if (input==null) {
+    		txtRisultato.setText("Insert codins");
+    	}
+    	
+    	List<Studente> lista = this.model.StudentiCorso(input);
+    	txtRisultato.clear();
+    	for (Studente s : lista) {
+    		txtRisultato.appendText(s.toString()+"\n");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
